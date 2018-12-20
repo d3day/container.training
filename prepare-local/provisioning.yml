@@ -76,6 +76,21 @@
         name: virtualenv
         state: latest
 
+    - name: Remove conflicting python distutils system packages
+      apt:
+          name: "{{ item }}"
+          state: absent
+          autoremove: yes
+      with_items:
+        - python-chardet
+        - python-urllib3
+
+    - name: Remove python distutils system leftovers
+      shell: "{{ item }}"
+      with_items:
+        - /bin/rm -rf /usr/local/lib/python2.7/dist-packages/chardet*
+        - /bin/rm -rf /usr/local/lib/python2.7/dist-packages/urllib3*
+
     - name: Install Docker Compose via PIP
       pip: name=docker-compose
 
